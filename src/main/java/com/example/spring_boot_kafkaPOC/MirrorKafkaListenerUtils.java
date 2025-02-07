@@ -10,7 +10,7 @@ public class MirrorKafkaListenerUtils {
 
     private static final String mirrorContainerGroupSuffix = "_mirror";
 
-    private static final String mirrorTopicPrefix = "kafka-atlas-scus-wus-ssl-stg-scus";
+    private static final String mirrorTopicPrefix = "kafka-atlas-scus-wus-ssl-stg-scus.";
 
     public static KafkaListener getMirrorKafkaListener(KafkaListener kafkaListener) {
         return new KafkaListener() {

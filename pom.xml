@@ -16,24 +16,37 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-boot-kafkaPOC</name>
 	<description>POC project for Spring Boot</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
 		<java.version>1.8</java.version>
+		<version.strati.ccm_client>8.9.4</version.strati.ccm_client>
+		<version.strati.ioc>4.0.0</version.strati.ioc>
+		<version.strati.boms>11.0.17</version.strati.boms>
+		<version.strati.logging>6.0.0</version.strati.logging>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.strati.ioc</groupId>
+				<artifactId>strati-af-springboot-starter</artifactId>
+				<version>${version.strati.ioc}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>io.strati.ioc</groupId>
+						<artifactId>strati-af-telemetry-spring-boot-starter</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>net.bytebuddy</groupId>
+						<artifactId>byte-buddy</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -54,14 +67,34 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+			<version>3.1.5</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<!--            <exclusions>-->
+			<!--                <exclusion>-->
+			<!--                    <groupId>org.glassfish</groupId>-->
+			<!--                    <artifactId>jakarta.el</artifactId>-->
+			<!--                </exclusion>-->
+			<!--                <exclusion>-->
+			<!--                    <groupId>org.apache.tomcat.embed</groupId>-->
+			<!--                    <artifactId>tomcat-embed-core</artifactId>-->
+			<!--                </exclusion>-->
+			<!--            </exclusions>-->
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.jayway.jsonpath</groupId>
+					<artifactId>json-path</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
@@ -74,24 +107,91 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.xerial.snappy</groupId>
+			<artifactId>snappy-java</artifactId>
+			<version>1.1.10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.20</version>
+		</dependency>
+		<dependency>
+			<groupId>io.strati</groupId>
+			<artifactId>strati-af-ccm-client-impl</artifactId>
+			<version>${version.strati.ccm_client}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.strati.base</groupId>
+			<artifactId>strati-af-framework-bom</artifactId>
+			<version>${version.strati.boms}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>io.strati</groupId>
+			<artifactId>strati-af-logging-log4j2-slf4j-impl</artifactId>
+			<version>${version.strati.logging}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>7.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>7.4.0</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<configuration>
+						<mainClass>com.walmart.atlas.r0s01us.MyApp</mainClass>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>pangaea_releases</id>
+			<name></name>
+			<url>https://repository.walmart.com/content/repositories/pangaea_releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>pangaea_snapshots</id>
+			<url>https://repository.walmart.com/content/repositories/pangaea_snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>

@@ -2,6 +2,7 @@ package com.example.spring_boot_kafkaPOC;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.BytesDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,6 +10,9 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListenerAnnotationBeanPostProcessor;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerConfigUtils;
@@ -40,9 +44,7 @@ public class KafkaConfig {
     public ConcurrentKafkaListenerContainerFactory<String, String>
     intermediateDcfinSalesPostingContainerFactory(
             @Qualifier("consumerFactory1")
-            ConsumerFactory<String, String> consumerFactory,
-            @Qualifier("commonErrorHandler")
-            ErrorHandler commonErrorHandler) {
+            ConsumerFactory<String, String> consumerFactory) {
 
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
@@ -74,9 +76,9 @@ public class KafkaConfig {
                         consumerProperties.putIfAbsent(k, v);
                     });
         }
-        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, BytesDeserializer.class);
         consumerProperties.put(
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, BytesDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(consumerProperties);
     }
 
@@ -92,14 +94,14 @@ public class KafkaConfig {
         return new KafkaProperties();
     }
 
-    @Bean(name = "commonErrorHandler")
-    public ErrorHandler commonErrorHandler() {
-        ErrorHandler errorHandler = new ErrorHandler() {
-            @Override
-            public void handle(Exception thrownException, ConsumerRecord<?, ?> data) {
-                System.out.println(thrownException);
-            }
-        };
-        return errorHandler;
-    }
+//    @Bean(name = "commonErrorHandler")
+//    public ErrorHandler commonErrorHandler() {
+//        ErrorHandler errorHandler = new ErrorHandler() {
+//            @Override
+//            public void handle(Exception thrownException, ConsumerRecord<?, ?> data) {
+//                System.out.println(thrownException);
+//            }
+//        };
+//        return errorHandler;
+//    }
 }
